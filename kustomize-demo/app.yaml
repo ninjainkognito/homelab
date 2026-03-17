@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kustomize-demo
+spec:
+  destination:
+    name: in-cluster
+    namespace: default           # Namespace, in dem nginx landen soll
+  source:
+    repoURL: 'https://github.com/ninjainkognito/homelab'
+    targetRevision: HEAD
+    path: kustomize-demo         # Pfad zur eigentlichen App
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
