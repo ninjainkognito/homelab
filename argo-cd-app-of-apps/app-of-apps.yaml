@@ -5,14 +5,13 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: argocd
+    namespace: argocd       # Namespace deines Argo CD-Servers
   source:
-    path: apps
     repoURL: 'https://github.com/ninjainkognito/homelab'
     targetRevision: HEAD
-    path: argocd
+    path: argo-cd-app-of-apps   # Dieser Ordner enthält dieses YAML
   project: default
-  # syncPolicy:
-  #   automated:
-  #     prune: true
-  #     selfHeal: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
