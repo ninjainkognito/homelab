@@ -5,11 +5,29 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: argocd       # Namespace deines Argo CD-Servers
+    namespace: argocd
   source:
     repoURL: 'https://github.com/ninjainkognito/homelab'
     targetRevision: HEAD
-    path: argo-cd-app-of-apps   # Dieser Ordner enthält dieses YAML
+    path: argo-cd-app-of-apps
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kustomize-demo
+spec:
+  destination:
+    name: in-cluster
+    namespace: default
+  source:
+    repoURL: 'https://github.com/ninjainkognito/homelab'
+    targetRevision: HEAD
+    path: kustomize-demo
   project: default
   syncPolicy:
     automated:
