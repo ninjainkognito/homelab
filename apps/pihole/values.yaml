@@ -1,0 +1,11 @@
+adminPassword: "changeme"
+
+DNS1: "1.1.1.1"
+DNS2: "9.9.9.9"
+
+persistentVolumeClaim:
+  enabled: true
+  size: 2Gi
+
+serviceDns:
+  type: LoadBalancer
