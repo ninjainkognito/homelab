@@ -9,3 +9,6 @@ persistentVolumeClaim:
 
 serviceDns:
   type: LoadBalancer
+
+serviceWeb:
+  type: LoadBalancer
