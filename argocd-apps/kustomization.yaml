@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ../apps/local-path-provisioner
   - ../apps/pihole
+  - ../apps/metallb
