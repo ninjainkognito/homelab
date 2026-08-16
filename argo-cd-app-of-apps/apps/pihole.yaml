@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pihole
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pihole
+
+  source:
+    repoURL: https://mojo2600.github.io/pihole-kubernetes/
+    chart: pihole
+    targetRevision: 2.27.0
+
+    helm:
+      values: |
+        adminPassword: "changeme"
+
+        DNS1: "1.1.1.1"
+        DNS2: "9.9.9.9"
+
+        persistentVolumeClaim:
+          enabled: true
+          size: 2Gi
+
+        serviceDns:
+          type: LoadBalancer
+
+  project: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
