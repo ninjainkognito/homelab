@@ -5,4 +5,4 @@ resources:
   - ../apps/local-path-provisioner
   - ../apps/pihole
   - ../apps/metallb
-  - ../apps/actualbudget/application.yaml
+  - ../apps/actualbudget
