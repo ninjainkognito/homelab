@@ -101,14 +101,14 @@ dashboards:
               ]
             },
             "time": {
-              "from": "now-1h",
+              "from": "now-3h",
               "to": "now"
             },
             "timepicker": {},
             "timezone": "browser",
             "title": "Proxmox Node",
             "uid": "proxmox-node",
-            "version": 1,
+            "version": 2,
             "panels": [
               {
                 "title": "CPU Usage",
@@ -127,7 +127,7 @@ dashboards:
                     "max": 1,
                     "custom": {
                       "drawStyle": "line",
-                      "fillOpacity": 10,
+                      "fillOpacity": 15,
                       "lineWidth": 2
                     }
                   },
@@ -135,7 +135,7 @@ dashboards:
                 },
                 "options": {
                   "legend": {
-                    "displayMode": "list",
+                    "displayMode": "table",
                     "placement": "bottom",
                     "calcs": [
                       "last",
@@ -148,98 +148,18 @@ dashboards:
                 },
                 "targets": [
                   {
+                    "refId": "A",
                     "datasource": "InfluxDB-Proxmox",
-                    "measurement": "cpustat",
-                    "policy": "default",
+                    "rawQuery": true,
                     "resultFormat": "time_series",
-                    "alias": "CPU",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "cpu"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
+                    "query": "SELECT mean(\"cpu\") AS \"CPU\" FROM \"cpustat\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval) fill(none)"
                   },
                   {
+                    "refId": "B",
                     "datasource": "InfluxDB-Proxmox",
-                    "measurement": "cpustat",
-                    "policy": "default",
+                    "rawQuery": true,
                     "resultFormat": "time_series",
-                    "alias": "IO wait",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "wait"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
+                    "query": "SELECT mean(\"wait\") AS \"IO wait\" FROM \"cpustat\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval) fill(none)"
                   }
                 ]
               },
@@ -267,7 +187,7 @@ dashboards:
                 },
                 "options": {
                   "legend": {
-                    "displayMode": "list",
+                    "displayMode": "table",
                     "placement": "bottom",
                     "calcs": [
                       "last"
@@ -279,145 +199,11 @@ dashboards:
                 },
                 "targets": [
                   {
+                    "refId": "A",
                     "datasource": "InfluxDB-Proxmox",
-                    "measurement": "cpustat",
-                    "policy": "default",
+                    "rawQuery": true,
                     "resultFormat": "time_series",
-                    "alias": "load 1m",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "avg1"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
-                  },
-                  {
-                    "datasource": "InfluxDB-Proxmox",
-                    "measurement": "cpustat",
-                    "policy": "default",
-                    "resultFormat": "time_series",
-                    "alias": "load 5m",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "avg5"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
-                  },
-                  {
-                    "datasource": "InfluxDB-Proxmox",
-                    "measurement": "cpustat",
-                    "policy": "default",
-                    "resultFormat": "time_series",
-                    "alias": "load 15m",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "avg15"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
+                    "query": "SELECT mean(\"avg1\") AS \"1m\", mean(\"avg5\") AS \"5m\", mean(\"avg15\") AS \"15m\" FROM \"cpustat\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval) fill(none)"
                   }
                 ]
               },
@@ -437,15 +223,38 @@ dashboards:
                     "min": 0,
                     "custom": {
                       "drawStyle": "line",
-                      "fillOpacity": 10,
+                      "fillOpacity": 15,
                       "lineWidth": 2
                     }
                   },
-                  "overrides": []
+                  "overrides": [
+                    {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "total"
+                      },
+                      "properties": [
+                        {
+                          "id": "custom.fillOpacity",
+                          "value": 0
+                        },
+                        {
+                          "id": "custom.lineStyle",
+                          "value": {
+                            "dash": [
+                              6,
+                              6
+                            ],
+                            "fill": "dash"
+                          }
+                        }
+                      ]
+                    }
+                  ]
                 },
                 "options": {
                   "legend": {
-                    "displayMode": "list",
+                    "displayMode": "table",
                     "placement": "bottom",
                     "calcs": [
                       "last",
@@ -458,103 +267,16 @@ dashboards:
                 },
                 "targets": [
                   {
+                    "refId": "A",
                     "datasource": "InfluxDB-Proxmox",
-                    "measurement": "memory",
-                    "policy": "default",
+                    "rawQuery": true,
                     "resultFormat": "time_series",
-                    "alias": "used",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "used"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
-                  },
-                  {
-                    "datasource": "InfluxDB-Proxmox",
-                    "measurement": "memory",
-                    "policy": "default",
-                    "resultFormat": "time_series",
-                    "alias": "total",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "total"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        }
-                      ]
-                    ]
+                    "query": "SELECT mean(\"memused\") AS \"used\", mean(\"memtotal\") AS \"total\", mean(\"memfree\") AS \"free\" FROM \"memory\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval) fill(none)"
                   }
                 ]
               },
               {
-                "title": "Network Traffic (nics)",
+                "title": "Swap / ARC",
                 "type": "timeseries",
                 "datasource": "InfluxDB-Proxmox",
                 "gridPos": {
@@ -565,7 +287,7 @@ dashboards:
                 },
                 "fieldConfig": {
                   "defaults": {
-                    "unit": "Bps",
+                    "unit": "bytes",
                     "min": 0,
                     "custom": {
                       "drawStyle": "line",
@@ -577,7 +299,7 @@ dashboards:
                 },
                 "options": {
                   "legend": {
-                    "displayMode": "list",
+                    "displayMode": "table",
                     "placement": "bottom",
                     "calcs": [
                       "last",
@@ -590,122 +312,317 @@ dashboards:
                 },
                 "targets": [
                   {
+                    "refId": "A",
                     "datasource": "InfluxDB-Proxmox",
-                    "measurement": "nics",
-                    "policy": "default",
+                    "rawQuery": true,
                     "resultFormat": "time_series",
-                    "alias": "in",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
-                      },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      },
-                      {
-                        "params": [
-                          "instance"
-                        ],
-                        "type": "tag"
-                      }
-                    ],
-                    "select": [
-                      [
-                        {
-                          "params": [
-                            "receive"
-                          ],
-                          "type": "field"
-                        },
-                        {
-                          "type": "mean"
-                        },
-                        {
-                          "params": [
-                            "1s"
-                          ],
-                          "type": "derivative"
-                        }
-                      ]
+                    "query": "SELECT mean(\"swapused\") AS \"swap used\", mean(\"swaptotal\") AS \"swap total\", mean(\"arcsize\") AS \"ZFS ARC\" FROM \"memory\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval) fill(none)"
+                  }
+                ]
+              },
+              {
+                "title": "Network Traffic (nics)",
+                "type": "timeseries",
+                "datasource": "InfluxDB-Proxmox",
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 0,
+                  "y": 16
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "unit": "Bps",
+                    "min": 0,
+                    "custom": {
+                      "drawStyle": "line",
+                      "fillOpacity": 15,
+                      "lineWidth": 2
+                    }
+                  },
+                  "overrides": []
+                },
+                "options": {
+                  "legend": {
+                    "displayMode": "table",
+                    "placement": "bottom",
+                    "calcs": [
+                      "last",
+                      "max"
                     ]
                   },
+                  "tooltip": {
+                    "mode": "multi"
+                  }
+                },
+                "targets": [
                   {
+                    "refId": "A",
                     "datasource": "InfluxDB-Proxmox",
-                    "measurement": "nics",
-                    "policy": "default",
+                    "rawQuery": true,
                     "resultFormat": "time_series",
-                    "alias": "out",
-                    "tags": [
-                      {
-                        "key": "object",
-                        "operator": "=",
-                        "value": "nodes"
+                    "query": "SELECT non_negative_derivative(mean(\"receive\"), 1s) AS \"rx\" FROM \"nics\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND (\"instance\" =~ /^(en|eth|vmbr)/) AND $timeFilter GROUP BY time($__interval), \"instance\" fill(none)"
+                  },
+                  {
+                    "refId": "B",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT non_negative_derivative(mean(\"transmit\"), 1s) AS \"tx\" FROM \"nics\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND (\"instance\" =~ /^(en|eth|vmbr)/) AND $timeFilter GROUP BY time($__interval), \"instance\" fill(none)"
+                  }
+                ]
+              },
+              {
+                "title": "Disk I/O (blockstat)",
+                "type": "timeseries",
+                "datasource": "InfluxDB-Proxmox",
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 12,
+                  "y": 16
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "unit": "Bps",
+                    "min": 0,
+                    "custom": {
+                      "drawStyle": "line",
+                      "fillOpacity": 15,
+                      "lineWidth": 2
+                    }
+                  },
+                  "overrides": []
+                },
+                "options": {
+                  "legend": {
+                    "displayMode": "table",
+                    "placement": "bottom",
+                    "calcs": [
+                      "last",
+                      "max"
+                    ]
+                  },
+                  "tooltip": {
+                    "mode": "multi"
+                  }
+                },
+                "targets": [
+                  {
+                    "refId": "A",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT non_negative_derivative(mean(\"rd_bytes\"), 1s) AS \"read\" FROM \"blockstat\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval), \"instance\" fill(none)"
+                  },
+                  {
+                    "refId": "B",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT non_negative_derivative(mean(\"wr_bytes\"), 1s) AS \"write\" FROM \"blockstat\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval), \"instance\" fill(none)"
+                  }
+                ]
+              },
+              {
+                "title": "Root FS Usage",
+                "type": "timeseries",
+                "datasource": "InfluxDB-Proxmox",
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 0,
+                  "y": 24
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "unit": "bytes",
+                    "min": 0,
+                    "custom": {
+                      "drawStyle": "line",
+                      "fillOpacity": 15,
+                      "lineWidth": 2
+                    }
+                  },
+                  "overrides": [
+                    {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "total"
                       },
-                      {
-                        "condition": "AND",
-                        "key": "host",
-                        "operator": "=",
-                        "value": "$node"
-                      }
-                    ],
-                    "groupBy": [
-                      {
-                        "params": [
-                          "$__interval"
-                        ],
-                        "type": "time"
-                      },
-                      {
-                        "params": [
-                          "null"
-                        ],
-                        "type": "fill"
-                      },
-                      {
-                        "params": [
-                          "instance"
-                        ],
-                        "type": "tag"
-                      }
-                    ],
-                    "select": [
-                      [
+                      "properties": [
                         {
-                          "params": [
-                            "transmit"
-                          ],
-                          "type": "field"
+                          "id": "custom.fillOpacity",
+                          "value": 0
                         },
                         {
-                          "type": "mean"
-                        },
-                        {
-                          "params": [
-                            "1s"
-                          ],
-                          "type": "derivative"
+                          "id": "custom.lineStyle",
+                          "value": {
+                            "dash": [
+                              6,
+                              6
+                            ],
+                            "fill": "dash"
+                          }
                         }
                       ]
+                    }
+                  ]
+                },
+                "options": {
+                  "legend": {
+                    "displayMode": "table",
+                    "placement": "bottom",
+                    "calcs": [
+                      "last",
+                      "max"
                     ]
+                  },
+                  "tooltip": {
+                    "mode": "multi"
+                  }
+                },
+                "targets": [
+                  {
+                    "refId": "A",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT mean(\"used\") AS \"used\", mean(\"blocks\") AS \"total\" FROM \"blockstat\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter GROUP BY time($__interval) fill(none)"
+                  }
+                ]
+              },
+              {
+                "title": "Uptime",
+                "type": "stat",
+                "datasource": "InfluxDB-Proxmox",
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 12,
+                  "y": 24
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "unit": "s",
+                    "color": {
+                      "mode": "fixed",
+                      "fixedColor": "green"
+                    }
+                  },
+                  "overrides": []
+                },
+                "options": {
+                  "reduceOptions": {
+                    "calcs": [
+                      "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                  },
+                  "textMode": "value",
+                  "colorMode": "value",
+                  "graphMode": "none"
+                },
+                "targets": [
+                  {
+                    "refId": "A",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT last(\"uptime\") AS \"uptime\" FROM \"system\" WHERE \"object\" = 'nodes' AND \"host\" =~ /^$node$/ AND $timeFilter"
+                  }
+                ]
+              },
+              {
+                "title": "VM / LXC CPU (alle Gäste)",
+                "type": "timeseries",
+                "datasource": "InfluxDB-Proxmox",
+                "gridPos": {
+                  "h": 9,
+                  "w": 24,
+                  "x": 0,
+                  "y": 32
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "unit": "percentunit",
+                    "min": 0,
+                    "custom": {
+                      "drawStyle": "line",
+                      "fillOpacity": 5,
+                      "lineWidth": 1
+                    }
+                  },
+                  "overrides": []
+                },
+                "options": {
+                  "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "calcs": [
+                      "last",
+                      "max"
+                    ]
+                  },
+                  "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                  }
+                },
+                "targets": [
+                  {
+                    "refId": "A",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT mean(\"cpu\") FROM \"system\" WHERE (\"object\" = 'qemu' OR \"object\" = 'lxc') AND \"status\" = 'running' AND $timeFilter GROUP BY time($__interval), \"vmid\" fill(none)"
+                  }
+                ]
+              },
+              {
+                "title": "VM / LXC Memory (alle Gäste)",
+                "type": "timeseries",
+                "datasource": "InfluxDB-Proxmox",
+                "gridPos": {
+                  "h": 9,
+                  "w": 24,
+                  "x": 0,
+                  "y": 41
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "unit": "bytes",
+                    "min": 0,
+                    "custom": {
+                      "drawStyle": "line",
+                      "fillOpacity": 5,
+                      "lineWidth": 1
+                    }
+                  },
+                  "overrides": []
+                },
+                "options": {
+                  "legend": {
+                    "displayMode": "table",
+                    "placement": "right",
+                    "calcs": [
+                      "last",
+                      "max"
+                    ]
+                  },
+                  "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                  }
+                },
+                "targets": [
+                  {
+                    "refId": "A",
+                    "datasource": "InfluxDB-Proxmox",
+                    "rawQuery": true,
+                    "resultFormat": "time_series",
+                    "query": "SELECT mean(\"mem\") FROM \"system\" WHERE (\"object\" = 'qemu' OR \"object\" = 'lxc') AND \"status\" = 'running' AND $timeFilter GROUP BY time($__interval), \"vmid\" fill(none)"
                   }
                 ]
               }
