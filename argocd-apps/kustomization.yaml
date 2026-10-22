@@ -6,3 +6,5 @@ resources:
   - ../apps/pihole
   - ../apps/metallb
   - ../apps/actualbudget
+  - ../apps/influxdb
+  - ../apps/grafana

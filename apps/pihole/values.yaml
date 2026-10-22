@@ -1,4 +1,9 @@
-adminPassword: "changeme"
+# Admin-Passwort wird NICHT mehr im Klartext hier gesetzt.
+# Es wird aus einem bestehenden Kubernetes-Secret gelesen (siehe README / kubectl-Kommando).
+admin:
+  enabled: true
+  existingSecret: "pihole-admin-password"
+  passwordKey: "password"
 
 DNS1: "1.1.1.1"
 DNS2: "9.9.9.9"

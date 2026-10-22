@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb
+spec:
+  # LoadBalancer, damit der Proxmox-Host (außerhalb des Clusters) via
+  # MetalLB-IP Metriken pushen kann.
+  type: LoadBalancer
+
+  selector:
+    app: influxdb
+
+  ports:
+    - name: http
+      port: 8086
+      targetPort: 8086

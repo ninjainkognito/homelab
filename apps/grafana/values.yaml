@@ -1,0 +1,57 @@
+# Grafana Helm Values
+# Admin-Passwort wird NICHT im Klartext hier abgelegt, sondern aus einem
+# bestehenden Kubernetes-Secret gelesen (siehe README).
+admin:
+  existingSecret: "grafana-admin-credentials"
+  userKey: admin-user
+  passwordKey: admin-password
+
+# Persistenz für Dashboards/Einstellungen (nutzt local-path-provisioner als
+# Default StorageClass).
+persistence:
+  enabled: true
+  size: 5Gi
+
+# Zugriff via MetalLB LoadBalancer (wie bei Pihole).
+service:
+  type: LoadBalancer
+  port: 80
+
+# InfluxDB (v1) als Datenquelle. Grafana erreicht InfluxDB cluster-intern per
+# Kubernetes-DNS. Die Datenbank "proxmox" wird von InfluxDB beim Start angelegt
+# und von Proxmox (Metric Server) befuellt.
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: InfluxDB-Proxmox
+        type: influxdb
+        access: proxy
+        url: http://influxdb.influxdb.svc.cluster.local:8086
+        database: proxmox
+        isDefault: true
+
+# Dashboard-Provider: laedt JSON-Dashboards, die unten unter "dashboards"
+# referenziert werden.
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+# Proxmox-Dashboard automatisch von grafana.com laden (ID 15356 – "Proxmox via
+# InfluxDB"). Die datasource-Variable des Dashboards wird auf unsere InfluxDB
+# gemappt.
+dashboards:
+  default:
+    proxmox:
+      gnetId: 15356
+      revision: 2
+      datasource: InfluxDB-Proxmox

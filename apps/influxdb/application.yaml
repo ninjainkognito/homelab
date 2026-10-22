@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: influxdb
+  namespace: argocd
+
+  annotations:
+    # Vor Grafana synchronisieren, damit die Datenquelle beim Start erreichbar ist.
+    argocd.argoproj.io/sync-wave: "0"
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/ninjainkognito/homelab
+    targetRevision: HEAD
+    path: apps/influxdb/app
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: influxdb
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
