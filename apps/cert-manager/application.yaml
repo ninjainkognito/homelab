@@ -21,6 +21,10 @@ spec:
       values: |
         crds:
           enabled: true
+        # Startup-Check-Job deaktivieren – blockiert unter ArgoCD unnoetig,
+        # obwohl cert-manager selbst laeuft.
+        startupapicheck:
+          enabled: false
 
   destination:
     server: https://kubernetes.default.svc
@@ -32,4 +36,6 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      # Server-Side-Apply ist fuer die grossen cert-manager-CRDs zwingend,
+      # sonst ueberschreiten sie das Annotation-Groessenlimit (client-side).
       - ServerSideApply=true
