@@ -7,4 +7,5 @@ resources:
   - ../apps/metallb
   - ../apps/actualbudget
   - ../apps/influxdb
+  - ../apps/kube-prometheus-stack
   - ../apps/grafana

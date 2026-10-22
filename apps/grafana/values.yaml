@@ -30,6 +30,11 @@ datasources:
         url: http://influxdb.influxdb.svc.cluster.local:8086
         database: proxmox
         isDefault: true
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        isDefault: false
 
 # Dashboard-Provider: laedt JSON-Dashboards, die unten unter "dashboards"
 # referenziert werden.

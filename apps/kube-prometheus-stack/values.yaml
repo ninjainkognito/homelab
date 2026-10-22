@@ -1,0 +1,46 @@
+# kube-prometheus-stack Werte
+# Ziel: Prometheus + kube-state-metrics + node-exporter fuer Cluster-/Namespace-
+# Metriken. Grafana ist bereits separat deployt (apps/grafana) und wird hier
+# NICHT nochmal installiert.
+
+# Grafana aus dem Stack deaktivieren – wir nutzen unser eigenes Grafana.
+grafana:
+  enabled: false
+
+# Alertmanager deaktiviert (fuer ein Homelab zunaechst nicht noetig).
+alertmanager:
+  enabled: false
+
+# kube-state-metrics liefert die Metriken pro Namespace/Pod/Deployment.
+kube-state-metrics:
+  enabled: true
+
+# node-exporter fuer Host-Level-Metriken der k8s-Nodes.
+prometheus-node-exporter:
+  enabled: true
+
+prometheus:
+  prometheusSpec:
+    # Alle ServiceMonitors/PodMonitors im Cluster beruecksichtigen, nicht nur
+    # die mit passendem Release-Label.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    retention: 15d
+
+    # Persistenz ueber den vorhandenen local-path-provisioner.
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 2Gi

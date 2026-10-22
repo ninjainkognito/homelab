@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+
+  annotations:
+    # Vor Grafana, damit die Prometheus-Datenquelle beim Grafana-Start existiert.
+    argocd.argoproj.io/sync-wave: "0"
+
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 73.2.0
+
+      helm:
+        releaseName: kube-prometheus-stack
+        valueFiles:
+          - $values/apps/kube-prometheus-stack/values.yaml
+
+    - repoURL: https://github.com/ninjainkognito/homelab
+      targetRevision: HEAD
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      # CRDs des Prometheus-Operators sind gross -> Server-Side-Apply noetig.
+
+    # Der Operator legt CRDs an; beim ersten Sync kann es zu Reihenfolge-
+    # Problemen kommen. Retry glaettet das.
+    retry:
+      limit: 5
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 3m
