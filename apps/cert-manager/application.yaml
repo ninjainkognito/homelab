@@ -14,7 +14,9 @@ spec:
   source:
     repoURL: https://charts.jetstack.io
     chart: cert-manager
-    targetRevision: v1.21.1
+    # k8s 1.29: cert-manager >= 1.17 nutzt das CRD-Feld selectableFields
+    # (erst ab k8s 1.30 bekannt). 1.16.x ist die mit 1.29 kompatible Linie.
+    targetRevision: v1.16.5
 
     helm:
       releaseName: cert-manager
