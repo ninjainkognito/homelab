@@ -163,3 +163,40 @@ Nach dem Login (siehe Grafana Admin-Zugang) liegt das Dashboard direkt bereit.
 > MetalLB-IP erreichbar. Willst du Auth, setze `INFLUXDB_HTTP_AUTH_ENABLED=true`
 > im InfluxDB-Deployment, lege User/Passwort an und ergaenze die Credentials
 > sowohl in der Grafana-Datenquelle als auch im Proxmox Metric Server.
+
+## HTTPS / Ingress (*.homelab.lan)
+
+Die Web-Dienste sind ueber HTTPS unter `*.homelab.lan` erreichbar. Umgesetzt mit
+ingress-nginx (MetalLB-IP `192.168.1.246`) und cert-manager mit einer eigenen,
+selbstsignierten Homelab-CA.
+
+| Dienst        | URL                          |
+|---------------|------------------------------|
+| Actual Budget | https://actual.homelab.lan   |
+| Grafana       | https://grafana.homelab.lan  |
+| Pihole Admin  | https://pihole.homelab.lan/admin |
+
+Wichtige Details:
+
+- **DNS:** Die Hostnamen werden von Pihole aufgeloest (`customDnsEntries` in
+  `apps/pihole/values.yaml` -> `192.168.1.246`). Clients muessen Pihole als
+  DNS-Server nutzen, damit `*.homelab.lan` aufgeloest wird.
+- **Actual Budget / SharedArrayBuffer:** Der Ingress setzt die Header
+  `Cross-Origin-Opener-Policy` und `Cross-Origin-Embedder-Policy`. Damit ist die
+  Seite "cross-origin isolated" und `SharedArrayBuffer` funktioniert. Das geht
+  nur ueber HTTPS – direkter HTTP-Zugriff per IP fuehrt zum Fehler.
+- **Zertifikat / Browser-Warnung:** Die CA ist selbstsigniert. Fuer ein gruenes
+  Schloss die CA einmalig in Browser/OS importieren. Export der CA:
+  ```bash
+  kubectl get secret homelab-ca-key-pair -n cert-manager \
+    -o jsonpath='{.data.tls\.crt}' | base64 -d > homelab-ca.crt
+  ```
+  Ohne Import zeigt der Browser eine Warnung – die Funktion (inkl.
+  SharedArrayBuffer) ist davon nicht betroffen.
+
+### cert-manager Versionshinweis
+
+Der Cluster laeuft auf Kubernetes 1.29. cert-manager ist auf `v1.16.5` gepinnt,
+weil neuere Versionen (ab 1.17) das CRD-Feld `selectableFields` nutzen, das erst
+ab Kubernetes 1.30 existiert. Bei einem k8s-Upgrade auf >= 1.30 kann
+cert-manager wieder angehoben werden.

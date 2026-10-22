@@ -17,3 +17,10 @@ serviceDns:
 
 serviceWeb:
   type: LoadBalancer
+
+# Lokale DNS-Records fuer die Ingress-Hostnamen (zeigen auf die ingress-nginx
+# MetalLB-IP). Persistent ueber das Chart, ueberlebt Pod-Neustarts.
+customDnsEntries:
+  - address=/actual.homelab.lan/192.168.1.246
+  - address=/grafana.homelab.lan/192.168.1.246
+  - address=/pihole.homelab.lan/192.168.1.246
