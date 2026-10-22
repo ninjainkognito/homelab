@@ -1,0 +1,7 @@
+# Bootstrap-Issuer: signiert nur das CA-Zertifikat selbst.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-bootstrap
+spec:
+  selfSigned: {}

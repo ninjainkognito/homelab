@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: grafana
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-ca-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - grafana.homelab.lan
+      secretName: grafana-tls
+  rules:
+    - host: grafana.homelab.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 80

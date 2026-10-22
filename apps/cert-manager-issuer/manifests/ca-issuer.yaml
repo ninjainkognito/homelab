@@ -1,0 +1,9 @@
+# Produktiver Issuer: stellt die Zertifikate fuer die Ingress-Hostnamen aus,
+# signiert mit der Homelab-CA.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: homelab-ca-issuer
+spec:
+  ca:
+    secretName: homelab-ca-key-pair

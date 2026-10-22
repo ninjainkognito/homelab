@@ -9,3 +9,7 @@ resources:
   - ../apps/influxdb
   - ../apps/kube-prometheus-stack
   - ../apps/grafana
+  - ../apps/cert-manager
+  - ../apps/cert-manager-issuer
+  - ../apps/ingress-nginx
+  - ../apps/ingress-routes

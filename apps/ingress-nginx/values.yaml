@@ -1,0 +1,22 @@
+controller:
+  # Feste MetalLB-IP fuer den Ingress (naechste freie im Pool .240-.250).
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 192.168.1.246
+
+  # Diese IngressClass als Default setzen, damit Ingresse ohne explizite
+  # Klasse ebenfalls von nginx bedient werden.
+  ingressClassResource:
+    default: true
+
+  # Snippet-Annotations erlauben (fuer die Cross-Origin-Header von Actual).
+  # Seit ingress-nginx 1.9 standardmaessig deaktiviert.
+  allowSnippetAnnotations: true
+  config:
+    annotations-risk-level: "Critical"
+
+  # Ressourcen klein halten (Homelab).
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi

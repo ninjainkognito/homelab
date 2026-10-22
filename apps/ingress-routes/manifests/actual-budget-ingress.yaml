@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: actual-budget
+  namespace: actual-budget
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-ca-issuer
+    # Actual Budget braucht cross-origin isolation fuer SharedArrayBuffer.
+    # Diese Header macht die Seite "crossOriginIsolated" -> WASM/SQLite lauft.
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "Cross-Origin-Opener-Policy: same-origin";
+      more_set_headers "Cross-Origin-Embedder-Policy: require-corp";
+    # Sync-Uploads koennen groesser sein.
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - actual.homelab.lan
+      secretName: actual-budget-tls
+  rules:
+    - host: actual.homelab.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: actual-budget
+                port:
+                  number: 80

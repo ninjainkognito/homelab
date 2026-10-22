@@ -1,0 +1,21 @@
+# Die eigene Homelab-CA. Wird vom selfsigned-bootstrap-Issuer signiert.
+# Das resultierende Secret "homelab-ca-key-pair" enthaelt CA-Cert + Key und
+# wird vom ca-ClusterIssuer zum Ausstellen der Service-Zertifikate genutzt.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: homelab-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: homelab-lan-ca
+  secretName: homelab-ca-key-pair
+  duration: 87600h    # 10 Jahre
+  renewBefore: 8760h  # 1 Jahr vor Ablauf erneuern
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-bootstrap
+    kind: ClusterIssuer
+    group: cert-manager.io

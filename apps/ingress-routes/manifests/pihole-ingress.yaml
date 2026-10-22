@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pihole
+  namespace: pihole
+  annotations:
+    cert-manager.io/cluster-issuer: homelab-ca-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - pihole.homelab.lan
+      secretName: pihole-tls
+  rules:
+    - host: pihole.homelab.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pihole-web
+                port:
+                  number: 80
