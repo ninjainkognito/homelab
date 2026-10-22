@@ -1,0 +1,253 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["proxmox", "homelab"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": "InfluxDB-Proxmox",
+        "definition": "SHOW TAG VALUES FROM \"cpustat\" WITH KEY = \"host\" WHERE \"object\" = 'nodes'",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Node",
+        "multi": false,
+        "name": "node",
+        "options": [],
+        "query": "SHOW TAG VALUES FROM \"cpustat\" WITH KEY = \"host\" WHERE \"object\" = 'nodes'",
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Proxmox Node",
+  "uid": "proxmox-node",
+  "version": 1,
+  "panels": [
+    {
+      "title": "CPU Usage",
+      "type": "timeseries",
+      "datasource": "InfluxDB-Proxmox",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["last", "max"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "cpustat",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "CPU",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["cpu"], "type": "field" }, { "type": "mean" } ] ]
+        },
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "cpustat",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "IO wait",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["wait"], "type": "field" }, { "type": "mean" } ] ]
+        }
+      ]
+    },
+    {
+      "title": "Load Average",
+      "type": "timeseries",
+      "datasource": "InfluxDB-Proxmox",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["last"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "cpustat",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "load 1m",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["avg1"], "type": "field" }, { "type": "mean" } ] ]
+        },
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "cpustat",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "load 5m",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["avg5"], "type": "field" }, { "type": "mean" } ] ]
+        },
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "cpustat",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "load 15m",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["avg15"], "type": "field" }, { "type": "mean" } ] ]
+        }
+      ]
+    },
+    {
+      "title": "Memory",
+      "type": "timeseries",
+      "datasource": "InfluxDB-Proxmox",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["last", "max"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "memory",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "used",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["used"], "type": "field" }, { "type": "mean" } ] ]
+        },
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "memory",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "total",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" } ],
+          "select": [ [ { "params": ["total"], "type": "field" }, { "type": "mean" } ] ]
+        }
+      ]
+    },
+    {
+      "title": "Network Traffic (nics)",
+      "type": "timeseries",
+      "datasource": "InfluxDB-Proxmox",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "min": 0,
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 2 }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "calcs": ["last", "max"] },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "nics",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "in",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }, { "params": ["instance"], "type": "tag" } ],
+          "select": [ [ { "params": ["receive"], "type": "field" }, { "type": "mean" }, { "params": ["1s"], "type": "derivative" } ] ]
+        },
+        {
+          "datasource": "InfluxDB-Proxmox",
+          "measurement": "nics",
+          "policy": "default",
+          "resultFormat": "time_series",
+          "alias": "out",
+          "tags": [
+            { "key": "object", "operator": "=", "value": "nodes" },
+            { "condition": "AND", "key": "host", "operator": "=", "value": "$node" }
+          ],
+          "groupBy": [ { "params": ["$__interval"], "type": "time" }, { "params": ["null"], "type": "fill" }, { "params": ["instance"], "type": "tag" } ],
+          "select": [ [ { "params": ["transmit"], "type": "field" }, { "type": "mean" }, { "params": ["1s"], "type": "derivative" } ] ]
+        }
+      ]
+    }
+  ]
+}
